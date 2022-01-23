@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Převodník měn</string>
+    <string name="amount_to_convert">Částka k převedení:</string>
+    <string name="convert_from">Převést z:</string>
+    <string name="convert_to">Převést do:</string>
+    <string name="select_country">Vyberte měnu</string>
+    <string name="convert_btn">Převést</string>
+    <string name="search">Hledat...</string>
+    <string name="history">Historie</string>
+</resources>

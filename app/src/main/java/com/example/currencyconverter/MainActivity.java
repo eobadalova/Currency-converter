@@ -5,6 +5,7 @@ import androidx.core.view.MenuItemCompat;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,12 +21,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.libraries.places.api.Places;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     //database
     private static final String TAG = "MainActivity";
     private Button historyButton;
+
+
 
 
     DatabaseHelper mDatabaseHelper;
@@ -58,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTheme(R.style.Theme_CurrencyConverter);
         setContentView(R.layout.activity_main);
+
+        Places.initialize(this,BuildConfig.KEY);
+
 
         mDatabaseHelper = new DatabaseHelper(this);
         historyButton = (Button) findViewById(R.id.historyBtn);
@@ -86,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 fromDialog = new Dialog(MainActivity.this);
                 fromDialog.setContentView(R.layout.from_spinner);
-                fromDialog.getWindow().setLayout(800,1000);
+                fromDialog.getWindow().setLayout(900,1000);
                 fromDialog.show();
 
                 EditText editText = fromDialog.findViewById(R.id.edit_text);
@@ -128,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 toDialog = new Dialog(MainActivity.this);
                 toDialog.setContentView(R.layout.to_spinner);
-                toDialog.getWindow().setLayout(800,1000);
+                toDialog.getWindow().setLayout(900,1000);
                 toDialog.show();
 
                 EditText editText = toDialog.findViewById(R.id.edit_text);
@@ -200,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
     public String getConversionRate(String conversionFrom, String convertTo, Double amountToConvert) {
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://free.currconv.com/api/v7/convert?q="+conversionFrom+"_"+convertTo+"&compact=ultra&apiKey=bb08155da1c189cdc164";
+        String url = "https://free.currconv.com/api/v7/convert?q="+conversionFrom+"_"+convertTo+"&compact=ultra&apiKey="+ BuildConfig.KEY;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -211,12 +221,15 @@ public class MainActivity extends AppCompatActivity {
                     conversionValue = "" + round((conversionRateValue * amountToConvert), 2);
                     conversionRateText.setText(conversionValue);
 
-                    String logConversion =conversionFrom+ " To " +convertTo+ " Amount: " +amountToConvert.toString() + " Result: " + conversionValue.toString();
+                    //String logConversion =conversionFrom+ " To " +convertTo+ " Amount: " +amountToConvert.toString() + " Result: " + conversionValue.toString();
+
+
+                    String logConversion =amountToConvert.toString()+"    "+ conversionFrom+ " -> " +convertTo+  "    " + conversionValue.toString();
 
                     if (logConversion.length() != 0) {
                         AddData(logConversion);
                     } else {
-                        toastMessage("Něco se pokazilo.");
+                        toastMessage("Something went wrong.");
                     }
 
                 } catch (JSONException e) {
